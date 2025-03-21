@@ -1,0 +1,22 @@
+---
+import Card from "./Card.astro"
+const cards = [
+    {id: '1',src: '/images/maps/dust2.jpg', alt:'dust2', title: 'Dust2',},
+    {id: '2',src: '/images/maps/mirage.jpg', alt:'mirage', title: 'Mirage',},
+    {id: '3',src: '/images/maps/inferno.jpg', alt:'inferno', title: 'Inferno',},
+    {id: '4',src: '/images/maps/nuke.jpg', alt:'nuke', title: 'Nuke',},
+    {id: '5',src: '/images/maps/ancient.jpg', alt:'ancient', title: 'Ancient',},
+    {id: '6',src: '/images/maps/anubis.jpg', alt:'anubis', title: 'Anubis',},
+    {id: '7',src: '/images/maps/train.jpg', alt:'train', title: 'Train',},
+    {id: '8',src: '/images/maps/overpass.jpg', alt:'overpass', title: 'Overpass',},
+];
+---
+
+<!-- Grilla responsiva -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+    {cards.map(card => (
+      <div>
+        <Card id={card.id} src={card.src} alt={card.alt} title={card.title} />
+      </div>
+    ))}
+  </div>
