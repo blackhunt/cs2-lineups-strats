@@ -1,0 +1,103 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+/**
+ * Definimos los arreglos de mapas y nades.
+ * Para los mapas, el identificador único es su title (en minúsculas).
+ * Para las nades, el identificador único es su type.
+ */
+const maps = [
+  { id: 'dust2', image: '/images/maps/dust2.jpg', description: 'Descripción del mapa Dust2' },
+  { id: 'mirage', image: '/images/maps/mirage.jpg', description: 'Descripción del mapa Mirage' },
+  { id: 'inferno', image: '/images/maps/inferno.jpg', description: 'Descripción del mapa Inferno' },
+  { id: 'nuke', image: '/images/maps/nuke.jpg', description: 'Descripción del mapa Nuke' },
+  { id: 'ancient', image: '/images/maps/ancient.jpg', description: 'Descripción del mapa Ancient' },
+  { id: 'anubis', image: '/images/maps/anubis.jpg', description: 'Descripción del mapa Anubis' },
+  { id: 'train', image: '/images/maps/train.jpg', description: 'Descripción del mapa Train' },
+  { id: 'overpass', image: '/images/maps/overpass.jpg', description: 'Descripción del mapa Overpass' },
+];
+
+const nades = [
+  { type: 'smoke', image: '/images/nades/smokegrenade.webp',  title: 'Smoke',   description: 'Granadas de humo' },
+  { type: 'molotov', image: '/images/nades/molotov.webp',     title: 'Molotov', description: 'Granadas incendiarias' },
+  { type: 'he',      image: '/images/nades/hegrenade.webp',   title: 'HE',      description: 'Granadas explosivas' },
+  { type: 'flash',   image: '/images/nades/flashbang.webp',   title: 'Flash',   description: 'Granadas cegadoras' },
+];
+
+/**
+ * Generamos las rutas estáticas para cada combinación de (map.id, nade.type).
+ */
+export async function getStaticPaths() {
+  const paths = [];
+  
+  for (const map of maps) {
+    for (const nade of nades) {
+      paths.push({
+        params: {
+          mapId: map.id,
+          nadeType: nade.type,
+        },
+        props: {
+          map,
+          nade,
+        },
+      });
+    }
+  }
+  return paths;
+}
+
+/**
+ * Obtenemos los parámetros de la URL.
+ */
+console.log(Astro.params);
+const { mapId, nadeType } = Astro.params;
+console.log(mapId, nadeType);
+/**
+ * Buscamos los datos correspondientes.
+ */
+const mapData = maps.find((m) => m.id === mapId) || {
+  id: 'desconocido',
+  image: '/images/maps/default.jpg',
+  description: 'No hay datos disponibles para este mapa.',
+};
+
+const nadeData = nades.find((n) => n.type === nadeType) || {
+  type: 'unknown',
+  image: '/images/nades/default.jpg',
+  title: 'Nade Desconocida',
+  description: 'No hay datos disponibles para esta nade.',
+};
+---
+
+<Layout>
+  <!-- Contenedor principal con fondo y overlay -->
+  <div class="relative min-h-screen">
+    <!-- Fondo con la imagen del mapa -->
+    <div
+      class="absolute inset-0 bg-cover bg-center"
+      style={`background-image: url('${mapData.image}')`}
+    ></div>
+    <!-- Overlay difuminado -->
+    <div class="absolute inset-0  bg-opacity-40 backdrop-blur-lg"></div>
+    <!-- Contenido principal -->
+    <div class="relative z-10 container mx-auto p-8 text-white">
+      <h1 class="text-4xl font-bold mb-2 capitalize">
+        {mapData.id} - {nadeData.title}
+      </h1>
+      <p class="text-lg mb-6">{mapData.description}</p>
+      <div class="flex items-center gap-6">
+        <!-- Imagen de la nade -->
+        <img
+          src={nadeData.image}
+          alt={nadeData.title}
+          class="w-64 h-64 object-cover rounded shadow-lg"
+        />
+        <!-- Descripción de la nade -->
+        <div>
+          <h2 class="text-2xl font-semibold mb-2">{nadeData.title}</h2>
+          <p class="text-md">{nadeData.description}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

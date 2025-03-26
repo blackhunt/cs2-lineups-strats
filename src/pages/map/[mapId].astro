@@ -1,0 +1,81 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/Card.astro';
+
+/**
+ * 1. Declaramos la lista de mapas y nades en el mismo bloque de frontmatter.
+ */
+const maps = [
+  { id: 'dust2', image: '/images/maps/dust2.jpg', title: 'Dust2', description: 'Descripción del mapa 1' },
+  { id: 'mirage', image: '/images/maps/mirage.jpg', title: 'Mirage', description: 'Descripción del mapa 2' },
+  { id: 'inferno', image: '/images/maps/inferno.jpg', title: 'Inferno', description: 'Descripción del mapa 3' },
+  { id: 'nuke', image: '/images/maps/nuke.jpg', title: 'Nuke', description: 'Descripción del mapa 4' },
+  { id: 'ancient', image: '/images/maps/ancient.jpg', title: 'Ancient', description: 'Descripción del mapa 5' },
+  { id: 'anubis', image: '/images/maps/anubis.jpg', title: 'Anubis', description: 'Descripción del mapa 6' },
+  { id: 'train', image: '/images/maps/train.jpg', title: 'Train', description: 'Descripción del mapa 7' },
+  { id: 'overpass', image: '/images/maps/overpass.jpg', title: 'Overpass', description: 'Descripción del mapa 8' },
+];
+
+// Actualizamos el arreglo de nades para incluir la propiedad "type"
+const nades = [
+  { type: 'smoke', image: '/images/nades/smokegrenade.webp', title: 'Smoke', description: 'Smokes' },
+  { type: 'molotov', image: '/images/nades/molotov.webp', title: 'Molotov', description: 'Molotov' },
+  { type: 'he', image: '/images/nades/hegrenade.webp', title: 'HE', description: 'HE' },
+  { type: 'flash', image: '/images/nades/flashbang.webp', title: 'Flash', description: 'Flashbang' },
+];
+
+/**
+ * 2. Definimos la función getStaticPaths para que Astro genere las rutas dinámicas.
+ */
+export async function getStaticPaths() {
+  return maps.map((map) => {
+    return {
+      params: { mapId: map.id },
+      props: { map },
+    };
+  });
+}
+
+/**
+ * 3. Tomamos el ID de la URL y buscamos el mapa correspondiente.
+ */
+const { mapId } = Astro.params;
+const mapData = maps.find((m) => m.id === mapId) || {
+  id: 'default',
+  image: '/images/maps/default.jpg',
+  title: 'Mapa Desconocido',
+  description: 'No hay datos disponibles para este mapa.',
+};
+---
+
+<!-- 4. Marcado HTML de la página -->
+<Layout>
+  <!-- Fondo con la imagen del mapa -->
+  <div
+    class="absolute inset-0 bg-cover bg-center"
+    style={`background-image: url('${mapData.image}')`}
+  ></div>
+  <div class="absolute inset-0 backdrop-blur-lg"></div>
+  <!-- Contenido principal -->
+  <div class="relative min-h-screen container mx-auto flex items-center justify-center">
+    <!-- Overlay difuminado -->
+    <div class="relative z-10 container mx-auto p-8">
+      <!-- Aquí puedes incluir la información del mapa, header, etc. -->
+      <h1 class="text-4xl font-bold text-white mb-4">{mapData.title}</h1>
+      <p class="text-lg text-white mb-8">{mapData.description}</p>
+      
+      <!-- Grid de Nades: cada card redirige a /mapa/$id_mapa/$tipo_nade -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        {nades.map((nade) => (
+          <Card
+            id={mapData.id} 
+            src={nade.image}
+            alt={nade.title}
+            title={nade.title}
+            link={`/map/${mapData.id}/${nade.type}`}
+          />
+        ))}
+      </div>
+    </div>
+  </div>
+</Layout>

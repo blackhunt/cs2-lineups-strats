@@ -1,35 +1,33 @@
 ---
 // Card.astro
 export interface Props {
-  id: number;
+  id: string;
   src: string;
   alt?: string;
   title?: string;
+  link?: string;
 }
 
-const { id, src, alt = "Imagen de la tarjeta", title = "" } = Astro.props;
+const { id, src, alt = "Imagen de la tarjeta", title = "", link } = Astro.props;
 ---
 
-<div class="relative group w-full h-80 overflow-hidden rounded-xl shadow-lg">
+<a
+  href={link || `/map/${id}`}
+  class="relative group block w-full h-80 overflow-hidden rounded-xl shadow-lg"
+>
   <!-- Imagen con efecto zoom en hover -->
   <img
     src={src}
     alt={alt}
     class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
   />
-  <!-- Overlay con botón que aparece al hacer hover -->
-  <div class="absolute inset-0 flex items-center justify-center  group-hover:bg-opacity-60 transition-colors duration-500">
-    <a
-      href={`/map/${id}`}
-      class="opacity-0 group-hover:opacity-100 px-5 py-3 bg-white text-black rounded font-semibold transition-opacity duration-300"
-    >
-      Ir
-    </a>
-  </div>
-  <!-- Título opcional en la esquina inferior izquierda -->
+
+  <!-- Barra inferior que muestra el title y aparece en hover -->
   {title && (
-    <div class="absolute bottom-4 left-4 bg-black bg-opacity-70 text-white px-2 py-1 rounded">
+    <div
+      class="absolute bottom-0 left-0 w-full px-4 py-2 bg-black bg-opacity-70 text-white text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+    >
       {title}
     </div>
   )}
-</div>
+</a>
